@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MAVERICK BLACK</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="logo">
+        MAVERICK<span>BLACK</span>
+    </div>
+
+    <div class="nav-right">
+
+        <a
+            id="discordLogin"
+            class="discord-btn"
+            href="http://localhost:3000/auth/discord"
+        >
+            LOGIN WITH DISCORD
+        </a>
+
+        <div id="userBox" class="user-box hidden">
+
+            <img
+                id="userAvatar"
+                class="user-avatar"
+                src=""
+                alt=""
+            >
+
+            <span id="userName"></span>
+
+            <span
+                id="adminBadge"
+                class="admin-badge hidden"
+            >
+                ADMIN
+            </span>
+
+            <button
+                class="logout-btn"
+                onclick="logout()"
+            >
+                ออกจากระบบ
+            </button>
+
+        </div>
+
+        <div id="currentTime" class="clock">
+            00:00:00
+        </div>
+
+    </div>
+</header>
+
+
+<main>
+
+    <section class="hero">
+
+        <p class="label">
+            MAVERICK BLACK SYSTEM
+        </p>
+
+        <h1>
+            ระบบเข้าเวร - ออกเวร
+        </h1>
+
+        <p>
+            บันทึกเวลาเข้าเวรและออกเวรอย่างเป็นระบบ
+        </p>
+
+    </section>
+
+
+    <section class="duty-panel">
+
+        <div class="input-group">
+
+            <label>
+                ชื่อผู้ปฏิบัติงาน
+            </label>
+
+            <input
+                id="nameInput"
+                type="text"
+                placeholder="กรอกชื่อของคุณ..."
+                autocomplete="off"
+            >
+
+        </div>
+
+        <div class="buttons">
+
+            <button
+                class="btn check-in"
+                onclick="checkIn()"
+            >
+                🟢 เข้าเวร
+            </button>
+
+            <button
+                class="btn check-out"
+                onclick="checkOut()"
+            >
+                🔴 ออกเวร
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <span>👥</span>
+
+            <div>
+                <p>ผู้ปฏิบัติงานทั้งหมด</p>
+                <strong id="totalCount">0</strong>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <span>🟢</span>
+
+            <div>
+                <p>กำลังเข้าเวร</p>
+                <strong id="activeCount">0</strong>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <span>📋</span>
+
+            <div>
+                <p>รายการทั้งหมด</p>
+                <strong id="recordCount">0</strong>
+            </div>
+        </div>
+
+    </section>
+
+
+    <section class="history">
+
+        <div class="history-header">
+
+            <div>
+                <p class="label">
+                    DUTY HISTORY
+                </p>
+
+                <h2>
+                    ประวัติการเข้าเวร
+                </h2>
+            </div>
+
+            <button
+                id="clearHistoryBtn"
+                class="clear-btn hidden"
+                onclick="clearHistory()"
+            >
+                🗑 ล้างประวัติ
+            </button>
+
+        </div>
+
+
+        <div class="search">
+
+            <input
+                id="searchInput"
+                type="text"
+                placeholder="🔎 ค้นหาชื่อ..."
+                oninput="renderTable()"
+            >
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>ชื่อ</th>
+                        <th>วันที่</th>
+                        <th>เวลาเข้า</th>
+                        <th>เวลาออก</th>
+                        <th>สถานะ</th>
+
+                        <th
+                            id="adminHead"
+                            class="hidden"
+                        >
+                            ADMIN
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody id="dutyTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- MODAL ล้างประวัติ -->
+
+<div id="clearModal" class="modal-overlay hidden">
+
+    <div class="modal-card">
+
+        <div class="modal-icon">
+            🔒
+        </div>
+
+        <h2>
+            ยืนยันการล้างประวัติ
+        </h2>
+
+        <p class="modal-text">
+            กรุณาใส่รหัสล้างประวัติ
+            เพื่อยืนยันการล้างข้อมูลทั้งหมด
+        </p>
+
+
+        <div class="password-box">
+
+            <span>
+                🔑
+            </span>
+
+            <input
+                id="clearPassword"
+                type="password"
+                placeholder="ใส่รหัสล้างประวัติ..."
+            >
+
+            <button
+                type="button"
+                class="eye-btn"
+                onclick="togglePassword()"
+            >
+                👁
+            </button>
+
+        </div>
+
+
+        <div class="warning-box">
+            ⚠️ ข้อมูลจะถูกลบอย่างถาวร และไม่สามารถกู้คืนได้
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button
+                class="modal-delete-btn"
+                onclick="confirmClearHistory()"
+            >
+                🗑 ล้างประวัติ
+            </button>
+
+            <button
+                class="modal-cancel-btn"
+                onclick="closeClearModal()"
+            >
+                ✕ ยกเลิก
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div
+    id="notification"
+    class="notification"
+></div>
+
+
+<script src="/js/app.js"></script>
+
+</body>
+</html>
